@@ -4,7 +4,7 @@
 module tt_um_register_file (
     input wire [31:0] data_in,
     input wire [3:0] write_addr,
-    input wire write_enable,
+    input wire write_enable, clk,
 
     input wire [3:0] read_addr_a,
     input wire [3:0] read_addr_b,
