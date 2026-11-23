@@ -1,7 +1,7 @@
 
 `timescale 1ns/1ps
 
-module register_file (
+module tt_um_register_file (
     input wire [31:0] data_in,
     input wire [3:0] write_addr,
     input wire write_enable,
