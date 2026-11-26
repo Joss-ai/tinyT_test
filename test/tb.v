@@ -81,7 +81,6 @@ module tb ();
         end
 
         $display("Prueba finalizada.");
-        $finish;
     end
 
 
