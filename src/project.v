@@ -7,7 +7,8 @@ module tt_um_register_file (
     input wire [7:0] data_in,
     input wire [2:0] write_addr,
     input wire write_enable,
-
+    input wire ena,
+    
     input wire [2:0] read_addr,
     output wire [7:0] data_out,
 
@@ -34,7 +35,7 @@ module tt_um_register_file (
     endgenerate
 
     assign data_out = registers[read_addr];
-
+    wire _unused = {ena, 1'b0};
 endmodule
 
 `default_nettype wire
