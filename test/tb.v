@@ -1,9 +1,6 @@
+`timescale 1ns/1ps
 `default_nettype none
-`timescale 1ns / 1ps
 
-/* This testbench just instantiates the module and makes some convenient wires
-   that can be driven / tested by the cocotb test.py.
-*/
 module tb ();
 
   // Dump the signals to a FST file. You can view it with gtkwave or surfer.
@@ -15,20 +12,21 @@ module tb ();
 
   // Wire up the inputs and outputs:
   reg clk;
-  reg rst_n;
-  reg ena;
-  reg [7:0] ui_in;
-  reg [7:0] uio_in;
-  wire [7:0] uo_out;
-  wire [7:0] uio_out;
-  wire [7:0] uio_oe;
+ reg ena;
+ reg rst_n;
+ reg [7:0] ui_in;
+ reg [7:0] uio_in;
+
+ wire [7:0] uo_out;
+ wire [7:0] uio_out;
+ wire [7:0] uio_oe;
 `ifdef GL_TEST
   wire VPWR = 1'b1;
   wire VGND = 1'b0;
 `endif
 
   // Replace tt_um_example with your module name:
-  tt_um_example user_project (
+  tt_um_register_file dut (
 
       // Include power ports for the Gate Level test:
 `ifdef GL_TEST
@@ -45,5 +43,47 @@ module tb ();
       .clk    (clk),      // clock
       .rst_n  (rst_n)     // not reset
   );
+
+// Reloj: periodo de 10 ns
+    always #5 clk = ~clk;
+
+    integer i;
+
+   initial begin
+        // Inicializacion
+        clk = 0;
+        ena = 1;
+        rst_n = 1;
+        ui_in = 0;
+        uio_in = 0;
+
+        // Escribir los 8 registros
+        for (i = 0; i < 8; i = i + 1) begin
+            @(negedge clk);
+            ui_in = 8'h10 + i;
+            uio_in = 8'b00001000 | i;
+            @(posedge clk);
+            #1;
+        end
+
+        // Leer los 8 registros
+        for (i = 0; i < 8; i = i + 1) begin
+            @(negedge clk);
+            uio_in = i << 4;
+            #1;
+
+            $display("Registro %0d = %h", i, uo_out);
+
+            if (uo_out !== (8'h10 + i))
+                $display("ERROR: Registro %0d", i);
+            else
+                $display("OK: Registro %0d", i);
+        end
+
+        $display("Prueba finalizada.");
+        $finish;
+    end
+
+
 
 endmodule
