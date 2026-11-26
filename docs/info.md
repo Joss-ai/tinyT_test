@@ -9,12 +9,12 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-Explain how your project works
+Es un proyecto sencillo para un archivo de registros con tamaño de 8 bits y 8 direcciones.
 
 ## How to test
 
-Explain how to use your project
+Agregar el dato de entrada, la dirección de escritura y posteriormente un ciclo de reloj después con la dirección de lectura revisar que se guardó el dato correctamente. 
 
 ## External hardware
 
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+No hardware externo necesario
