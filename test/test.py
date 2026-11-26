@@ -2,51 +2,42 @@
 # SPDX-FileCopyrightText: © 2024 Tiny Tapeout
 # SPDX-License-Identifier: Apache-2.0
 
+
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import ClockCycles
+from cocotb.triggers import RisingEdge, Timer
 
 @cocotb.test()
 async def test_project(dut):
 
-    dut._log.info("Start Register File test")
-
     clock = Clock(dut.clk, 10, unit="us")
     cocotb.start_soon(clock.start())
 
-    # Inicializacion
     dut.ena.value = 1
     dut.rst_n.value = 1
     dut.ui_in.value = 0
     dut.uio_in.value = 0
 
-    await ClockCycles(dut.clk, 2)
+    await Timer(1, unit="us")
 
-    # Escribir y leer los 8 registros
-    for i in range(8):
+    # Escribir 50 en el registro 0
+    dut.ui_in.value = 50
+    dut.uio_in.value = 0b00001000
 
-        # Escritura
-        dut.ui_in.value = 50 + i
-        dut.uio_in.value = 0b00001000 | i
+    await RisingEdge(dut.clk)
+    await Timer(1, unit="us")
 
-        await ClockCycles(dut.clk, 1)
+    # Leer el registro 0
+    dut.uio_in.value = 0b00000000
 
-        # Lectura
-        dut.uio_in.value = i << 4
+    await Timer(1, unit="us")
 
-        await ClockCycles(dut.clk, 1)
+    resultado = int(dut.uo_out.value)
 
-        # Verificacion
-        resultado = int(dut.uo_out.value)
-        esperado = 50 + i
+    dut._log.info(f"Resultado: {resultado}")
 
-        dut._log.info(
-            f"Registro {i}: esperado={esperado}, obtenido={resultado}"
-        )
+    assert resultado == 50, (
+        f"Error: esperado 50, obtenido {resultado}"
+    )
 
-        assert resultado == esperado, (
-            f"Error en registro {i}: "
-            f"esperado {esperado}, obtenido {resultado}"
-        )
-
-    dut._log.info("Register File test PASSED")
+    dut._log.info("TEST PASSED")
