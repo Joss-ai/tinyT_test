@@ -18,7 +18,7 @@ module tt_um_register_file (
     //write_enable = [3] uio_in
     //read_addr = [6:4] uio_in
     output wire [7:0] uio_out,  // IOs: Output path
-    output wire [7:0] uio_oe,   // IOs: Enable path (active high: 0=input, 1=output)
+    output wire [7:0] uio_oe   // IOs: Enable path (active high: 0=input, 1=output)
 
 );
 
